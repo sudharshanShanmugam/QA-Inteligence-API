@@ -37,18 +37,12 @@ from project_manager import project_manager
 
 app = FastAPI(title="QA Intelligence API", version="1.0.0")
 
-def _cors_origins() -> list:
-    if settings.ALLOWED_ORIGINS:
-        return [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
-    # Dev fallback — overridden via ALLOWED_ORIGINS in production
-    return ["http://localhost:1111", "http://localhost:2222", "http://localhost:3000"]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_cors_origins(),
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "Accept"],
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
