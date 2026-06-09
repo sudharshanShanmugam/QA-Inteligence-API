@@ -84,6 +84,9 @@ _PROVIDERS: Dict[str, Any] = {
         "base_url": "https://api.deepinfra.com/v1/openai",
         "key_required": True,
         "models": [
+            "openai/gpt-oss-120b-Turbo",
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b",
             "meta-llama/Llama-3.3-70B-Instruct",
             "meta-llama/Meta-Llama-3.1-70B-Instruct",
             "meta-llama/Meta-Llama-3.1-8B-Instruct",
