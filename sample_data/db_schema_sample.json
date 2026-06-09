@@ -1,0 +1,59 @@
+{
+  "database": "ecommerce_db",
+  "tables": [
+    {
+      "name": "coupons",
+      "description": "Master coupon table",
+      "columns": [
+        {"name": "id", "type": "UUID", "primary_key": true, "not_null": true},
+        {"name": "code", "type": "VARCHAR(20)", "unique": true, "not_null": true},
+        {"name": "discount_type", "type": "ENUM('percentage','fixed')", "not_null": true},
+        {"name": "discount_value", "type": "DECIMAL(10,2)", "not_null": true},
+        {"name": "min_order_value", "type": "DECIMAL(10,2)", "default": "0.00"},
+        {"name": "max_uses", "type": "INTEGER", "default": null, "comment": "null = unlimited"},
+        {"name": "uses_count", "type": "INTEGER", "default": "0", "not_null": true},
+        {"name": "valid_from", "type": "TIMESTAMPTZ", "not_null": true},
+        {"name": "valid_until", "type": "TIMESTAMPTZ", "not_null": true},
+        {"name": "is_active", "type": "BOOLEAN", "default": "true", "not_null": true},
+        {"name": "applicable_products", "type": "UUID[]", "default": null, "comment": "null = all products"},
+        {"name": "created_at", "type": "TIMESTAMPTZ", "default": "NOW()", "not_null": true}
+      ],
+      "indexes": [
+        {"name": "idx_coupons_code", "columns": ["code"], "unique": true},
+        {"name": "idx_coupons_valid_until", "columns": ["valid_until"]}
+      ]
+    },
+    {
+      "name": "coupon_usage",
+      "description": "Tracks per-user coupon usage (idempotency + limit enforcement)",
+      "columns": [
+        {"name": "id", "type": "UUID", "primary_key": true},
+        {"name": "coupon_id", "type": "UUID", "foreign_key": "coupons.id", "not_null": true},
+        {"name": "user_id", "type": "UUID", "foreign_key": "users.id", "not_null": true},
+        {"name": "order_id", "type": "UUID", "foreign_key": "orders.id", "default": null},
+        {"name": "status", "type": "ENUM('pending','redeemed','rolled_back')", "not_null": true},
+        {"name": "discount_applied", "type": "DECIMAL(10,2)", "not_null": true},
+        {"name": "used_at", "type": "TIMESTAMPTZ", "default": "NOW()"}
+      ],
+      "constraints": [
+        {"type": "unique", "columns": ["coupon_id", "user_id"], "comment": "one coupon per user"}
+      ]
+    },
+    {
+      "name": "orders",
+      "description": "Completed orders",
+      "columns": [
+        {"name": "id", "type": "UUID", "primary_key": true},
+        {"name": "user_id", "type": "UUID", "not_null": true},
+        {"name": "cart_id", "type": "UUID", "not_null": true},
+        {"name": "subtotal", "type": "DECIMAL(10,2)", "not_null": true},
+        {"name": "discount_amount", "type": "DECIMAL(10,2)", "default": "0.00"},
+        {"name": "coupon_code", "type": "VARCHAR(20)", "default": null},
+        {"name": "tax_amount", "type": "DECIMAL(10,2)", "not_null": true},
+        {"name": "total_charged", "type": "DECIMAL(10,2)", "not_null": true},
+        {"name": "status", "type": "ENUM('pending','confirmed','shipped','delivered','cancelled','refunded')", "not_null": true},
+        {"name": "created_at", "type": "TIMESTAMPTZ", "default": "NOW()"}
+      ]
+    }
+  ]
+}

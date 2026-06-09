@@ -1,0 +1,35 @@
+{
+  "title": "Apply Discount Coupon at Checkout",
+  "role": "registered customer",
+  "goal": "apply a discount coupon code during checkout",
+  "benefit": "I can save money on my purchase",
+  "module": "Checkout",
+  "feature": "Coupon Application",
+  "priority": "high",
+  "sprint": "Sprint-42",
+  "acceptance_criteria": [
+    "Given a valid coupon code, the system applies the discount to the cart total",
+    "Given an expired coupon, the system shows 'Coupon expired' error",
+    "Given an already-used coupon (single-use), the system shows 'Coupon already used' error",
+    "Given a coupon not applicable to items in cart, show 'Coupon not applicable' error",
+    "Discount must be reflected in the order summary before payment",
+    "Coupon code field accepts max 20 characters, alphanumeric only",
+    "Only one coupon can be applied per order",
+    "Coupon discount cannot reduce order total below $0.01",
+    "Coupon must be validated server-side before payment processing"
+  ],
+  "business_rules": [
+    "Coupon codes are case-insensitive",
+    "Minimum order value may be required for coupon applicability",
+    "Coupon discount is applied before tax calculation",
+    "Expired coupons cannot be reactivated",
+    "Admin can mark coupons as active/inactive"
+  ],
+  "integration_points": [
+    "Coupon Service API",
+    "Cart Service",
+    "Payment Service",
+    "Order Service",
+    "Notification Service (coupon applied confirmation email)"
+  ]
+}

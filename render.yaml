@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: qa-intelligence-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DEEPINFRA_API_KEY
+        sync: false
+      - key: DEEPINFRA_BASE_URL
+        value: https://api.deepinfra.com/v1/openai
+      - key: LLM_MODEL
+        value: meta-llama/Llama-3.3-70B-Instruct
+      - key: EMBED_MODEL
+        value: BAAI/bge-large-en-v1.5
+      - key: ENTITY_MODEL
+        value: meta-llama/Meta-Llama-3.1-8B-Instruct
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: qa_intelligence
+      - key: USE_NEO4J
+        value: "false"
+      - key: GRAPH_PERSIST_PATH
+        value: /var/data/qa_graph.pkl
+      - key: CHROMA_PERSIST_DIR
+        value: /var/data/chroma_db
+      - key: CHROMA_COLLECTION_NAME
+        value: qa_knowledge
+      - key: DATA_DIR
+        value: /var/data
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: DEBUG
+        value: "false"
+      - key: CHUNK_SIZE
+        value: "500"
+      - key: CHUNK_OVERLAP
+        value: "50"
+      - key: MAX_RETRIEVAL_DOCS
+        value: "10"
+    healthCheckPath: /api/health
+    disk:
+      name: qa-data
+      mountPath: /var/data
+      sizeGB: 10

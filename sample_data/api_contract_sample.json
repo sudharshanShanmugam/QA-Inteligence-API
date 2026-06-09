@@ -1,0 +1,77 @@
+{
+  "name": "Checkout API",
+  "version": "2.5",
+  "base_url": "/api/v2",
+  "module": "Checkout",
+  "endpoints": [
+    {
+      "path": "/coupons/validate",
+      "method": "POST",
+      "description": "Validate a coupon code for a given cart",
+      "auth_required": true,
+      "request_body": {
+        "coupon_code": "string (max 20 chars, alphanumeric)",
+        "cart_id": "string (UUID)",
+        "cart_total": "number (float, min: 0.01)"
+      },
+      "responses": {
+        "200": {
+          "valid": true,
+          "discount_type": "percentage|fixed",
+          "discount_value": "number",
+          "final_total": "number",
+          "expiry_date": "ISO8601"
+        },
+        "400": {"error": "INVALID_COUPON_FORMAT|COUPON_NOT_FOUND|COUPON_EXPIRED|COUPON_USED|MIN_ORDER_NOT_MET|NOT_APPLICABLE"},
+        "401": {"error": "UNAUTHORIZED"},
+        "429": {"error": "RATE_LIMIT_EXCEEDED"}
+      },
+      "events_published": [],
+      "db_tables_updated": ["coupons"],
+      "rate_limit": "10 req/min per user"
+    },
+    {
+      "path": "/coupons/apply",
+      "method": "POST",
+      "description": "Apply a validated coupon to a cart (marks as pending-use)",
+      "auth_required": true,
+      "request_body": {
+        "coupon_code": "string",
+        "cart_id": "string (UUID)",
+        "idempotency_key": "string (UUID, required)"
+      },
+      "responses": {
+        "200": {
+          "applied": true,
+          "discount_amount": "number",
+          "new_total": "number"
+        },
+        "400": {"error": "COUPON_ALREADY_APPLIED|INVALID_COUPON"},
+        "409": {"error": "CONCURRENT_MODIFICATION"}
+      },
+      "events_published": ["CouponApplied"],
+      "db_tables_updated": ["carts", "coupon_usage"],
+      "idempotency": true
+    },
+    {
+      "path": "/checkout/place-order",
+      "method": "POST",
+      "description": "Place order – finalises coupon usage and triggers payment",
+      "auth_required": true,
+      "request_body": {
+        "cart_id": "string",
+        "payment_method": "credit_card|debit_card|upi|wallet|netbanking",
+        "billing_address": "object"
+      },
+      "responses": {
+        "201": {"order_id": "string", "total_charged": "number", "coupon_applied": "string|null"},
+        "400": {"error": "CART_EMPTY|INVALID_PAYMENT"},
+        "402": {"error": "PAYMENT_FAILED"},
+        "409": {"error": "INVENTORY_CONFLICT"}
+      },
+      "events_published": ["OrderCreated", "PaymentProcessed", "CouponRedeemed"],
+      "db_tables_updated": ["orders", "payments", "coupons", "coupon_usage", "cart"],
+      "idempotency": true
+    }
+  ]
+}

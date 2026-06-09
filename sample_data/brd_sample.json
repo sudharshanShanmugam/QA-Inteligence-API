@@ -1,0 +1,23 @@
+{
+  "doc_type": "brd",
+  "title": "Coupon & Discount Management – Business Requirements",
+  "version": "1.2",
+  "author": "Product Team",
+  "date": "2025-01-15",
+  "content": "The e-commerce platform requires a coupon management system allowing marketing to create time-bound, value-based discount codes. Customers apply coupons at checkout. The system must validate coupon eligibility, prevent abuse (multi-use, expired codes, concurrent application), and accurately reflect discounts in order records and financial reporting. Coupon redemption events must be published to the event bus for analytics and loyalty systems. All coupon validation must occur server-side to prevent client-side manipulation. The system must handle high-volume coupon campaigns (e.g. Black Friday) without performance degradation – target: validate coupon in <200ms at 95th percentile under 10,000 concurrent users.",
+  "modules_affected": ["Checkout", "Orders", "Payments", "Notifications", "Analytics", "Admin"],
+  "business_rules": [
+    "One coupon per order",
+    "Coupon discount applies before tax calculation",
+    "Minimum order value enforced per coupon configuration",
+    "Single-use coupons must be idempotent (retry-safe)",
+    "Coupon must remain valid from time of application to time of payment",
+    "Revenue reporting must reflect discounted amounts",
+    "Coupon brute-force protection required (rate limiting)"
+  ],
+  "success_metrics": [
+    "Coupon application error rate < 0.1%",
+    "No double-discount incidents post-launch",
+    "Coupon validation P95 latency < 200ms"
+  ]
+}
