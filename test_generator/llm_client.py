@@ -61,6 +61,9 @@ class LLMClient:
         self._api_key_override = api_key
         self._base_url_override = base_url
 
+    def is_api_key_set(self) -> bool:
+        return bool(self._api_key_override)
+
     def set_project_context(self, project_id: Optional[str]) -> None:
         _project_ctx.project_id = project_id
 

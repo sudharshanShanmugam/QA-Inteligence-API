@@ -30,7 +30,7 @@ services:
       - key: DATA_DIR
         value: /var/data
       - key: ALLOWED_ORIGINS
-        sync: false
+        value: https://qa-inteligence-frontend.onrender.com,https://qa-intelligence-frontend.onrender.com
       - key: DEBUG
         value: "false"
       - key: CHUNK_SIZE

@@ -345,6 +345,7 @@ def get_settings():
         "entity_model": settings.ENTITY_MODEL,
         "usage": {"input_tokens": inp_tok, "output_tokens": out_tok},
         "cost": cost,
+        "api_key_set": llm_client.is_api_key_set(),
     }
 
 
