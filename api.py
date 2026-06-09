@@ -85,11 +85,9 @@ _PROVIDERS: Dict[str, Any] = {
         "key_required": True,
         "models": [
             "meta-llama/Llama-3.3-70B-Instruct",
-            "meta-llama/Meta-Llama-3.1-8B-Instruct",
             "meta-llama/Meta-Llama-3.1-70B-Instruct",
-            "meta-llama/Meta-Llama-3.1-405B-Instruct",
+            "meta-llama/Meta-Llama-3.1-8B-Instruct",
             "mistralai/Mixtral-8x7B-Instruct-v0.1",
-            "deepseek-ai/DeepSeek-R1",
             "Qwen/Qwen2.5-72B-Instruct",
         ],
     },
@@ -97,7 +95,7 @@ _PROVIDERS: Dict[str, Any] = {
         "name": "OpenAI",
         "base_url": "https://api.openai.com/v1",
         "key_required": True,
-        "models": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"],
+        "models": ["gpt-4o", "gpt-4o-mini"],
     },
     "groq": {
         "name": "Groq",
@@ -106,7 +104,6 @@ _PROVIDERS: Dict[str, Any] = {
         "models": [
             "llama-3.3-70b-versatile",
             "llama-3.1-8b-instant",
-            "mixtral-8x7b-32768",
             "gemma2-9b-it",
         ],
     },
